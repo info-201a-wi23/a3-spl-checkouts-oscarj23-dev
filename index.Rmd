@@ -1,86 +1,110 @@
 ---
 title: "A3: SPL Library Checkouts"
+author: "Oscar Maldonado"
+date: "02/21/2023"
 output: html_document
 ---
 
 ### Introduction
+The data for this assignment comes from the Seattle Public Library. I am using smaller data sets based on the
+initial 40 million entries to create a report about library circulation trends.
 
-An introduction of the data and a description of the trends/books/items you are choosing to analyze (and why!)
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE)
+    library(dplyr)
+    library(ggplot2)
+    
+    source("chart1.R")
+    source("chart2.R")
+    source("chart3.R")
+    source("agg_table.R")
+    source("summary.R")
+```
+
 
 ### Summary Information
 
+
 Write a summary paragraph of findings that includes the 5 values calculated from your summary information R script
+The checkout data from the Seattle Public Library provides information on the number of times items were checked out from the
+library's collection, including books, DVDs, and other materials, from 2005 to 2023. This data can be used to identify
+trends in reading and media consumption over time, as well as to inform collection development and resource allocation decisions
+by the library. The data is publicly available on the library's website and can be accessed and analyzed by researchers, journalists,
+and other interested parties.
 
 These will likely be calculated using your DPLYR skills, answering questions such as:
 
 - What is the average number of checkouts for each item?
-- What is the month or year with the most/least checkouts for a book that you're interested in?
-- What is the month or year with the most/least checkouts for ebooks?
-- How has the number of print book checkouts changed over time?
+```{r agg_table}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE)
+knitr::kable(table, col.names = c('Material Checked out', 'Average Checkouts'),
+             caption = 'Average Checkouts for each Matieral in the Seattle Public Libray'
+            )
+```
 
-Feel free to calculate and report values that you find relevant.
+- What is the month or year with the most/least checkouts for a book that you're interested in?
+  - The year for the most checkouts for the book `r my_book_title` was `r my_book_year` with `r my_book_checkouts` checkouts that year.
+- What is the month or year with the most/least checkouts for ebooks?
+  - the full year for the least amount of ebook checkouts was 2017 with `r ebook_checkouts17` checkouts.
+- How has the number of print book checkouts changed over time? 
+  - The number for book checkouts has fluctuated throughout the years, in 2017 total book checkouts were `r book_checkouts17` and as of 2022 (last full year) books had `r book_checkouts22` checkouts.
+- How did the Pandemic affect the Seattle Public Library? 
+  - During the Pandemic a lot of in person shopping/visitation was no longer a viable option, and this is reflected in the data. The amount of physical checkouts for the Seattle Public Library (SPL) in 2019 was `r count_physical19` checkouts,
+  in 2020 this number plummeted to `r count_physical20` total checkouts, and we see the number of digital checkouts increase from `r count_digital19` in 2019 to `r count_digital20` in 2020. We also see the checkouts for digital media begin to increase and checkouts for physical      books around this time period, the checkouts for physical books in 2017 was `r book_checkouts17` checkouts, while in 2022 (last full year) this figure fell to `r book_checkouts22` checkouts. On the other hand, checkouts for medias such as ebooks and audiobooks 
+  increased from `r ebook_checkouts17` checkouts and `r audio_checkouts17` checkouts in 2017 to `r ebook_checkouts22` checkouts and `r audio_checkouts22` checkouts in 2022.
+  
 
 ### The Dataset
 
-- Who collected/published the data?  
+- Who collected/published the data? 
+    - The Seattle Public Library  
 - What are the parameters of the data (dates, number of checkouts, kinds of books, etc.)?
+    - "UsageClass"      "CheckoutType"    "MaterialType"    "CheckoutYear"    "CheckoutMonth"   "Checkouts"       "Title"          
+    "ISBN"            "Creator"         "Subjects"        "Publisher"       "PublicationYear"
 - How was the data collected or generated?  
+    - electronically through the library's integrated library system
 - Why was the data collected?  
+    - to help the library manage its collection, track usage, and make informed decisions about resource allocation and collection development.
 - What, if any, ethical questions do you need to consider when working with this data?  
+    - Privacy of the users and data accuracy are some concerns
 - What are possible limitations or problems with this data?   (at least 200 words)
-
+    - This data has a limited scope, it only includes records from the Seattle Public Library and it may not be an accurate 
+      reflection of checkout trends in the libraries of other areas. Missing or incomplete data is also an issue, these 
+      missing values could skew any projects or inferences to be made about this data. The COVID-19 pandemic pandemic likely 
+      had a significant impact on library usage and checkout trends and the data may not accurately reflect these changes or       account for the potential disruptions to library services.
 
 ### First Trends Over Time Chart
-
-Include a chart. Make sure to describe why you included the chart, and what patterns emerged
-
-The first chart that you will create and include will show the trend over time of your variable/topic/interest. Think carefully about what you want to communicate to your user (you may have to find relevant trends in the dataset first!). Here are some requirements to help guide your design:
-
-- Show more than one, but fewer than ~10 trends
-  - For example, two books, or 5 different mediums
-- You must have clear x and y axis labels
-- The chart needs a clear title 
-- You need a legend for your different line colors and a clear - legend title
-In your .Rmd file, make sure to describe why you included the chart, and what patterns emerged
-
-When we say "clear" or "human readable" titles and labels, that means that you should not just display the variable name.
-
-Here's an example of how to run an R script inside an RMarkdown file:
-
-``````{r, echo = FALSE, warning = FALSE, code = readLines("chart1_example.R")}
+```{r chart1}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE)
+ggplot(checkout_timeline, (aes(x = CheckoutYear, y = total_count, fill = UsageClass))) +
+    geom_col() +
+    labs(title = "Physical Checkouts over the years", x = "checkout year", y = 'checkouts')
 ```
+In this bar chart we can see the amount of physical checkouts made at the Seattle Public Library every year, spanning the years of 2017 to 2023. We can see the amount of physical checkouts gradually decreasing, but in 2020, physical checkouts took a sharp decline largely in part due to the COVID-19 pandemic. We see the amount of physical checkouts slightly pickup again in the years to come following the effects of the pandemic but they never truly recover their glory.
+
+
 
 ### Second Trends Over Time Chart
-
-Include a chart. Make sure to describe why you included the chart, and what patterns emerged
-
-The second chart that you will create and include will show another trend over time of your variable/topic/interest. Think carefully about what you want to communicate to your user (you may have to find relevant trends in the dataset first!). Here are some requirements to help guide your design:
-
-- Show more than one, but fewer than ~10 trends
-  - For example, two books, or 5 different mediums
-- You must have clear x and y axis labels
-- The chart needs a clear title 
-- You need a legend for your different line colors and a clear - legend title
-In your .Rmd file, make sure to describe why you included the chart, and what patterns emerged
-
-When we say "clear" or "human readable" titles and labels, that means that you should not just display the variable name.
-
-Here's an example of how to run an R script inside an RMarkdown file:
-
-``````{r, echo = FALSE, code = readLines("chart2_example.R")}
+```{r, echo = FALSE, warning = FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE)
+    ggplot(usage, aes(x = CheckoutYear, y = total_count,)) +
+    geom_line() +
+    xlab("years") +
+    ylab("Checkouts") +
+    ggtitle("Digital Checkouts from 2017-2023")
 ```
 
-### Your Choice
+In this line chart we can see the amount of digital checkouts made at the Seattle Public Library every year, spanning the years of 2017 to 2023. We can see the amount of digital checkouts increase at a decent rate, but in 2020 and the years to come, digital checkouts increased largely in part due to the COVID-19 pandemic. This trend is something I expect to continue on through the decade as we advance as a more technologically reliant society and books become obsolete.
 
-The last chart is up to you. It could be a line plot, scatter plot, histogram, bar plot, stacked bar plot, and more. Here are some requirements to help guide your design:
-
-- You must have clear x and y axis labels
-- The chart needs a clear title 
-- You need a legend for your different line colors and a clear legend title
-
-Here's an example of how to run an R script inside an RMarkdown file:
-
-``````{r, echo = FALSE, code = readLines("chart2_example.R")}
+### Third Trends Over Time Chart
+```{r, echo = FALSE, warning = FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE)
+    ggplot(top10_mats, aes(x = "", y = totals, fill = MaterialType)) +
+    geom_bar(stat = "identity") +
+    coord_polar(theta = "y") +
+    theme_void() +
+    labs(title = "Top 10 material types checked out from 2017 to 2023")
 ```
 
+In the third and final chart we can see the distribution of checkouts made at the Seattle Public Library from 2017-2023. We can see the monopoly Books, Ebooks, Audiobooks and Videodiscs have over just about every other material type offered by the Seattle public library, these 5 virtually eclipse the rest. I expect this trend to hold for the most part, with the exception of seeing books phased out as we become a paperless society.
 

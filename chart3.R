@@ -1,5 +1,6 @@
 library("dplyr")
 library("tidyr")
+library("plotly")
 source("agg_table.R")
 
 mats <- six_years %>% select("MaterialType", "CheckoutYear", "Checkouts") %>%
@@ -7,10 +8,8 @@ mats <- six_years %>% select("MaterialType", "CheckoutYear", "Checkouts") %>%
     arrange(-totals)
 top10_mats <- head(mats,10)
 
-ggplot(top10_mats, aes(x = "", y = totals, fill = MaterialType)) +
-    geom_bar(stat = "identity") +
-    coord_polar(theta = "y") +
-    theme_void() +
-    labs(title = "top 10 material types checked out from 2017 to 2023")
+plot_ly(top10_mats, labels = ~MaterialType, values = ~totals, type = "pie") %>%
+  layout(title = "Top 10 Materials from 2017-2023",
+         showlegend = TRUE)
 
 

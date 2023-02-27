@@ -76,18 +76,19 @@ knitr::kable(table, col.names = c('Material Checked out', 'Average Checkouts'),
 ### First Trends Over Time Chart
 ```{r chart1}
 knitr::opts_chunk$set(echo = FALSE, message = FALSE)
-ggplot(checkout_timeline, (aes(x = CheckoutYear, y = total_count, fill = UsageClass))) +
+ggplot(checkout_timeline, (aes(x = CheckoutYear, y = totals, fill = UsageClass))) +
     geom_col() +
     labs(title = "Physical Checkouts over the years", x = "checkout year", y = 'checkouts')
 ```
+
 In this bar chart we can see the amount of physical checkouts made at the Seattle Public Library every year, spanning the years of 2017 to 2023. We can see the amount of physical checkouts gradually decreasing, but in 2020, physical checkouts took a sharp decline largely in part due to the COVID-19 pandemic. We see the amount of physical checkouts slightly pickup again in the years to come following the effects of the pandemic but they never truly recover their glory.
 
 
 
 ### Second Trends Over Time Chart
-```{r, echo = FALSE, warning = FALSE}
+```{r echo=FALSE, warning=FALSE}
 knitr::opts_chunk$set(echo = FALSE, message = FALSE)
-    ggplot(usage, aes(x = CheckoutYear, y = total_count,)) +
+    ggplot(usage, aes(x = CheckoutYear, y = totals)) +
     geom_line() +
     xlab("years") +
     ylab("Checkouts") +
@@ -99,12 +100,12 @@ In this line chart we can see the amount of digital checkouts made at the Seattl
 ### Third Trends Over Time Chart
 ```{r, echo = FALSE, warning = FALSE}
 knitr::opts_chunk$set(echo = FALSE, message = FALSE)
-    ggplot(top10_mats, aes(x = "", y = totals, fill = MaterialType)) +
-    geom_bar(stat = "identity") +
-    coord_polar(theta = "y") +
-    theme_void() +
-    labs(title = "Top 10 material types checked out from 2017 to 2023")
+ plot_ly(top10_mats, labels = ~MaterialType, values = ~totals, type = "pie") %>%
+  layout(title = "Top 10 Materials from 2017-2023",
+         showlegend = TRUE)
 ```
 
 In the third and final chart we can see the distribution of checkouts made at the Seattle Public Library from 2017-2023. We can see the monopoly Books, Ebooks, Audiobooks and Videodiscs have over just about every other material type offered by the Seattle public library, these 5 virtually eclipse the rest. I expect this trend to hold for the most part, with the exception of seeing books phased out as we become a paperless society.
+
+
 
